@@ -2,6 +2,7 @@ const express = require("express")
 
 const router = express.Router();
 const Dog = require("../models/DogModel")
+const {insertValidation} = require("../Validation")
 
 router.get("/", async (req, res)=>{
     try{
@@ -13,6 +14,10 @@ router.get("/", async (req, res)=>{
 })
 
 router.post("/", async (req,res)=>{
+
+    const {error} = insertValidation(req.body);
+    if (error) return res.status(400).send(error.details[0].message)
+
     const dog = new Dog({
         name: req.body.name,
         age: req.body.age,
